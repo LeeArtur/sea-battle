@@ -10,8 +10,6 @@
 # git push
 import random
 import os
-from dataclasses import field
-
 
 # Clear screen function
 def clear_screen():
@@ -58,6 +56,54 @@ def place_ship(field, x, y, size, direction):
             nx, ny = x + 1, y
         else:
             nx, ny = x, y + 1
-        field[nx][ny] = "[S]"
+        field[nx][ny] = "S"
 
-print(random.choice(["Horizontal", "Vertical"]))
+def player_shot():
+    while True:
+        shot = input("Enter coordinates of shot (separated by space): ").split()
+        if len(shot) == 2 and (coordinate.isdigit() for coordinate in shot):
+            row, col = map(int, shot)
+            if 0 <= row <= 7 and 0 <= col <= 7:
+                return row, col
+        else:
+            print("Invalid input. Try again")
+
+def check_shot(field, x, y):
+    if field[x][y] == "S":
+        field[x][y] = "X"
+        print("Hit!")
+        return "Hit!"
+    elif field[x][y] == " ":
+        field[x][y] = "O"
+        print("Miss!")
+    else:
+        print("You already hit there!")
+
+def all_ship_sunk(field):
+    for row in field:
+        if "S" in row:
+            return False
+    return True
+
+def gameplay():
+    player_name = input("Enter your name: ")
+    while True:
+        field = create_field()
+        place_ships(field)
+        shots = 0
+        while True:
+            clear_screen()
+            display_field(field, True)
+            x, y = player_shot()
+            result = check_shot(field, x, y)
+            shots += 1
+
+            if result == "Hit!" and all_ship_sunk(field):
+                print("Congratulations! You won the game!")
+                break
+        replay = input("Do you want to play again? (yes or no): ")
+        if replay == "no":
+            print("Thanks you for playing")
+            break
+
+gameplay()
