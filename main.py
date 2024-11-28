@@ -28,4 +28,36 @@ def display_field(field, hidden = True):
         else:
             row_display = [f"[{cell}]" for cell in row]
         print(f"{i} " + ''.join(row_display))
-print(display_field(create_field()))
+
+def place_ships(field):
+    ships = [(3,1), (2,2), (1,4)]
+    for size, count in ships:
+        for _ in range(count):
+            while True:
+                x = random.randint(0,6)
+                y = random.randint(0, 6)
+                direction = random.choice(["Horizontal", "Vertical"])
+                if can_be_placed(field,x, y, size, direction):
+                    place_ship(field,x, y, size, direction)
+                    break
+
+def can_be_placed(field, x, y, size, direction):
+    for _ in range(size):
+        if direction == "Vertical":
+            nx, ny = x + 1, y
+        else:
+            nx, ny = x, y + 1
+        if not (0 < nx < 7 and 0 < ny < 7) or (field[nx][ny] != " "):
+            return False
+        else:
+            return True
+
+def place_ship(field, x, y, size, direction):
+    for _ in range(size):
+        if direction == "Vertical":
+            nx, ny = x + 1, y
+        else:
+            nx, ny = x, y + 1
+        field[nx][ny] = "[S]"
+
+print(random.choice(["Horizontal", "Vertical"]))
